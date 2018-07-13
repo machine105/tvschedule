@@ -26,3 +26,5 @@
     for k, v in program.items():
         print k + ': ' + str(v)
 
+## ライセンス
+[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
