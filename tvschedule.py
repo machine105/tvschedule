@@ -8,6 +8,5 @@ def extract_titles(html):
     for match in matches:
         print(match.group())
 
-chs = channels.TVTokyo()
-chs.fetch()
+chs = {'TVTokyo': channels.TVTokyo(), 'TokyoMX': channels.TokyoMX()}
 
