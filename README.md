@@ -26,9 +26,4 @@
     # 番組情報の表示
     for k, v in program:
         print k + ': ' + v
-    
-## 使用
-    import channels 
-- `Channel`クラス
-  
-  各テレビ局の番組情報を保持するためのクラスに共通の親クラスです
+
