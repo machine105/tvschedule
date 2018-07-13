@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-import re
-import urllib2
 import channels
-
-def extract_titles(html):
-    matches = re.finditer(r'<a class=\"title', html)
-    for match in matches:
-        print(match.group())
+import tkinter
 
 chs = {'TVTokyo': channels.TVTokyo(), 'TokyoMX': channels.TokyoMX()}
+
 

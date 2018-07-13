@@ -22,7 +22,7 @@ class Channel(object):
 
     # get Program on air at TIME on DATE
     # if No Program on air then return None
-    def getProgramAt(self, date, time):
+    def program_at(self, date, time):
         time = int(time)
         while True:
             for program in self.programs:
@@ -165,6 +165,8 @@ class MXParser(HTMLParser, object):
                     self.readingTime = True
                 elif 'oa_title' in splited:
                     self.readingTitle = True
+                elif 'oa_subtitle' in splited:
+                    self.readingTitle = False
         elif tag == 'a':
             if self.readingTitle:
                 self.buf['url'] = attr['href']
