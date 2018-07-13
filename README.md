@@ -11,7 +11,6 @@
   `channels`の使用例です
   
 ## 使用例
-    import datetime
     import channels
     
     # TokyoMXの番組情報を保持するオブジェクト
@@ -24,6 +23,6 @@
     program = tmx.program_at('20180713', '1930')
     
     # 番組情報の表示
-    for k, v in program:
-        print k + ': ' + v
+    for k, v in program.items():
+        print k + ': ' + str(v)
 
