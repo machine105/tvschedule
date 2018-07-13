@@ -25,25 +25,36 @@ class Channel(object):
 #
 # TVTokyo Format:
 # [title]
-#   <p class='txcms_unit13ProgramUnitTitle'> $TITLE$ </p>
+#   <p class='txcms_unit13ProgramUnitTitle'><a> TITLE </a></p>
 # [time]
-#   <p class='txcms_unit13ProgramUnitTimeText'> $TIME$ </p>
+#   <p class='txcms_unit13ProgramUnitTimeText'> TIME </p>
 # [date]
 #   <td class='txcms_cms_dYYYYMMDD'>...</td>
+# [url]
+#   <a href='URL'> TITLE </a>
+#   OR if official link exists,
+#   <div class='txcms_officialBtn'><a href='URL'>もっと詳しく</a></div>
 class TVTParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         # 
         self.programs = []
         # reading flags
+        self.readingProgram = False
         self.readingTitle = False
         self.readingTime = False
+        self.readingOfficialURL = False # some programs have an official link
         # data buffer
         self.buf = {}
 
     def handle_starttag(self, tag, attr):
         attr = dict(attr)
-        if tag == 'p':
+        if tag == 'div':
+            if 'class' in attr:
+                splited = attr['class'].split()
+                if 'txcms_officialBtn' in splited:
+                    self.readingOfficialURL = True
+        elif tag == 'p':
             if 'class' in attr:
                 splited = attr['class'].split()
                 if 'txcms_unit13ProgramUnitTitle' in splited:
@@ -53,10 +64,17 @@ class TVTParser(HTMLParser):
         elif tag == 'td':
             if 'class' in attr:
                 splited = attr['class'].split()
-                for text in splited:
-                    m = re.match(ur'txcms_cms_d([0-9]{8})', text)
-                    if m:
-                        self.buf['date'] = m.group(1)
+                if not 'txcms_isBlank' in splited and not 'txcms_unit13MainCell' in splited:
+                    for text in splited:
+                        m = re.match(ur'txcms_cms_d([0-9]{8})', text)
+                        if m:
+                            self.readingProgram = True
+                            self.buf['date'] = m.group(1)
+        elif tag == 'a':
+            if self.readingTitle:
+                self.buf['url'] = 'http://www.tv-tokyo.co.jp' + attr['href']
+            elif self.readingOfficialURL:
+                self.buf['url'] = attr['href']
 
     def handle_data(self, data):
         if self.readingTitle:
@@ -70,10 +88,16 @@ class TVTParser(HTMLParser):
         if tag == 'p':
             if self.readingTitle:
                 self.readingTitle = False
-                self.programs.append(self.buf)
-                self.buf = {}
             elif self.readingTime:
                 self.readingTime = False
+        elif tag == 'div':
+            if self.readingOfficialURL:
+                self.readingOfficialURL = False
+        elif tag == 'td':
+            if self.readingProgram:
+                self.programs.append(self.buf)
+                self.buf = {}
+                self.readingProgram = False
             
 # TVTokyo
 class TVTokyo(Channel):
