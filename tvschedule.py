@@ -6,7 +6,7 @@ from Tkinter import *
 wcell = 300
 hcell = 30
 
-chs = {'TVTokyo': channels.TVTokyo(), 'TokyoMX': channels.TokyoMX()}
+chs = {'TVTokyo': channels.TVTokyo(), 'TokyoMX': channels.TokyoMX(), 'TBS': channels.TBS()}
 
 width = wcell * len(chs) + 30
 height = hcell * 27
