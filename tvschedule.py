@@ -25,6 +25,7 @@ for chname, ch in chs.items():
     handle.place(x = 30 + i * wcell, y = 0)
     # fetch programs
     ch.fetch()
+    print('{}: fetch completed'.format(chname))
     for program in ch.programs:
         if program['date'] != datetime.date.today().strftime('%Y%m%d'):
             continue
